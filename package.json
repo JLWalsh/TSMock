@@ -1,24 +1,24 @@
 {
-  "name": "nest-provider-builders",
-  "version": "1.0.6",
-  "description": "A library that facilitates declaring providers for NestJS.",
-  "repository": "git@github.com:JLWalsh/Nest-ProviderBuilders.git",
+  "name": "tsmock",
+  "version": "1.0.0",
+  "description": "A library that facilitates mocking classes & functions in Typescript.",
+  "repository": "git@github.com:JLWalsh/TSMock.git",
   "author": "James L. Walsh",
   "license": "MIT",
   "dependencies": {
-    "@nestjs/common": "^5.7.0",
-    "rxjs": "^6.4.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^8.0.3",
     "typescript": "^3.3.3"
   },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "test": "jest"
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/jest": "^24.0.0",
     "@types/node": "^10.12.22",
+    "@types/reflect-metadata": "^0.1.0",
     "ts-jest": "^23.10.5"
   },
   "jest": {
@@ -36,5 +36,3 @@
     ]
   }
 }
-
-

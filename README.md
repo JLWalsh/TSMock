@@ -1,104 +1,50 @@
-## NestJS Provider Builders
-A library that facilitates declaring providers for [NestJS](https://nestjs.com/). 
-```bash
-npm install nest-provider-builders
-```
-or
-```bash
-yarn add nest-provider-builders
-```
+## TSMock
+An (**experimental**) library that allows for mocking classes & functions like 
+BDD Mockito.
 
-## Before, you had to
-Create providers manually, like so:
+By default, all mocks will return undefined. This library was made to mock
+class methods or functions directly, so it will be impossible to mock properties.
+
+### I want to mock a...
+
+### Class
 ```typescript
-  @Module({
-    providers: [
-      {
-        provide: 'AnInterface',
-        useClass: AnImplementedInterface
-      }
-    ]
-  })
-```
+interface RandomNumberGenerator {
+    generateRandom(): number;
+    generateRandomWithSeed(seed: number): number;
+}
 
-### But now, with provider builders:
+const rng = Mock.newObject<RandomNumberGenerator>();
+// Or let Typescript infer the type
+const rng: RandomNumberGenerator = Mock.newObject();
+
+willReturn(10).given(rng).generateRandom();
+
+console.log(rng.generateRandom()); // 10
+
+// We can also return a result depending on what the args are given 
+willReturn(27).given(rng).generateRandomWithSeed(32);
+
+console.log(rng.generateRandomWithSeed(32)); // 27
+console.log(rng.generateRandomWithSeed(54)); // undefined
+``` 
+
+
+### Function
+Due to their different nature, functions have to be mocked using `Mock.newFunction`
 ```typescript
-  @Module({
-    providers: [
-      bind<AnInterface>('AnInterface').withClass(AnImplementedInterface),
-    ]
-  })
-```
+function generateRandom(seed: number | void) {
+    if(seed){ return seed + 42; }
+    return 42;
+}
 
-## Why was this made?
-- To add type safety for declaring providers. The typings of the provider object do not ensure that the value provided will be of the same type as the provide key. This is why you must specify a type when using `bind<T>`, as it will ensure that the binded value is of the same type.
-- To provide (pun intended) better readability. Declaring providers takes a lot of space, so a module with many providers will be uselessly big. By using this library, most providers will be one liners that can be read like a sentence.
+const mockedGenerateRandom = Mock.newFunction<typeof generateRandom>();
 
-## Binding to a...
+// This will return 24 when no args are given.
+// Do notice that you have to call the method after the given.
+willReturn(24).given(mockedGenerateRandom)();
+willReturn(27).given(mockedGenerateRandom)(27);
 
-### Value / Constant
-```typescript
-  @Module({
-    providers: [
-      bind<string>('WelcomeMessage').withConstant('Welcome to the world of dependency injection!'),
-    ]
-  })
-```
-
-### Class (using `bindClass`)
-```typescript
-  class AClass {};
-
-  @Module({
-    providers: [
-        bindClass(AClass),
-    ]
-  })
-```
-#### Class (using `bind`) 
-```typescript
-  class AClass {};
-
-  @Module({
-    providers: [
-      bind<AClass>(AClass).withClass(AClass),
-    ]
-  })
-```
-
-### Factory
-```typescript
-  class AClass {};
-
-  const aClassFactory = () => new AClass();
-
-  @Module({
-    providers: [
-      bind<AClass>(AClass).withFactory(aClassFactory),
-    ]
-  })
-```
-
-### Factory with injectable dependencies
-```typescript
-  class DBConnexion { constructor(public readonly connexionString: string) };
-
-  interface Configuration {
-    username: string,
-    password: string,
-  }
-
-  const connexionFactory = (config: Configuration) => new DBConnexion(`${config.username}:${config.password}`);
-
-  @Module({
-    providers: [
-      bind<Configuration>('Configuration').withConstant({
-        username: 'username!',
-        password: 'passw0rd!'
-      }),
-      bind<DBConnexion>(DBConnexion).withInjectableFactory(aClassFactory)
-                                    .inject('Configuration'),
-                                    .build()
-    ]
-  })
+console.log(mockedGenerateRandom()); // 24
+console.log(mockedGenerateRandom(27)); // 27;
 ```
