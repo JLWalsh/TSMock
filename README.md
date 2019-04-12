@@ -48,3 +48,6 @@ willReturn(27).given(mockedGenerateRandom)(27);
 console.log(mockedGenerateRandom()); // 24
 console.log(mockedGenerateRandom(27)); // 27;
 ```
+
+### Todos
+- Add type safety to willReturn method
