@@ -1,23 +1,23 @@
-export abstract class Event {
+import {EventMatcher} from "./EventMatcher";
+import {Action} from "./Action";
 
-    protected constructor(
-        private readonly functionName: string | void,
-        private readonly args: any[],
-    ) {}
+export interface EventData {
+  propertyName?: string;
+  args: any[];
+}
 
-    public matchesFunction(functionName: string, args: any[]) {
-        const argsMatch = this.matches(args);
+export class Event {
 
-        return argsMatch && this.functionName === functionName;
-    }
+  constructor(
+    private readonly matcher: EventMatcher,
+    private readonly action: Action,
+  ) {}
 
-    public matches(args: any[]) {
-        if(this.args.length !== args.length) {
-            return false;
-        }
+  public matches(event: EventData) {
+    return this.matcher.matches(event);
+  }
 
-        return this.args.every((arg, index) => arg === args[index]);
-    }
-
-    public abstract execute(): any;
+  public apply() {
+    return this.action.execute();
+  }
 }

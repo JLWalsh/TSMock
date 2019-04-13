@@ -1,22 +1,22 @@
 import {BehaviourBuilder} from "./BehaviourBuilder";
-import {WillReturnEventBuilder} from "./events/WillReturnEvent";
-import {WillThrowEventBuilder} from "./events/WillThrowEvent";
-import {WillResolveEventBuilder} from "./events/WillResolveEvent";
-import {WillRejectEventBuilder} from "./events/WillRejectEvent";
+import {WillReturnAction} from "./actions/WillReturnAction";
+import {WillThrowAction} from "./actions/WillThrowAction";
+import {WillResolveAction} from "./actions/WillResolveAction";
+import {WillRejectAction} from "./actions/WillRejectAction";
 
 export function willReturn(value: any) {
-  return new BehaviourBuilder(WillReturnEventBuilder.willReturn(value));
+  return BehaviourBuilder.forAction(new WillReturnAction(value));
 }
 
 export function willThrow(value: any) {
-  return new BehaviourBuilder(WillThrowEventBuilder.willThrow(value));
+  return BehaviourBuilder.forAction(new WillThrowAction(value));
 }
 
 export function willResolve(value: any) {
-  return new BehaviourBuilder(WillResolveEventBuilder.willResolveWith(value));
+  return BehaviourBuilder.forAction(new WillResolveAction(value));
 }
 
 export function willReject(value: any) {
-  return new BehaviourBuilder(WillRejectEventBuilder.willRejectWith(value));
+  return BehaviourBuilder.forAction(new WillRejectAction(value));
 }
 
